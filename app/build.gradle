@@ -55,8 +55,6 @@ android {
         exclude 'META-INF/rxkotlin_main.kotlin_module'
     }
 
-    lintOptions { baseline file("lint-baseline.xml") }
-
     testOptions {
         unitTests.all {
             testLogging {

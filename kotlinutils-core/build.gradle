@@ -12,13 +12,16 @@ buildscript {
         // in the individual module build.gradle files
 
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_ver"
-        classpath "org.jetbrains.kotlin:kotlin-android-extensions:$kotlin_ver"
+
+        classpath 'com.github.dcendents:android-maven-gradle-plugin:1.5'
     }
 }
 
 apply plugin: 'com.android.library'
 apply plugin: 'kotlin-android'
-//apply plugin: 'kotlin-android-extensions'
+apply plugin: 'com.github.dcendents.android-maven'
+
+group='com.github.bornest'
 
 android {
     compileSdkVersion rootProject.ext.compile_sdk_ver
@@ -92,4 +95,28 @@ dependencies {
         compile "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_ver"
         compile "org.jetbrains.kotlin:kotlin-reflect:$kotlin_ver"
     //endregion
+}
+
+// build a jar with source files
+task sourcesJar(type: Jar) {
+    from android.sourceSets.main.java.srcDirs
+    classifier = 'sources'
+}
+
+task javadoc(type: Javadoc) {
+    failOnError  false
+    source = android.sourceSets.main.java.sourceFiles
+    classpath += project.files(android.getBootClasspath().join(File.pathSeparator))
+    classpath += configurations.compile
+}
+
+// build a jar with javadoc
+task javadocJar(type: Jar, dependsOn: javadoc) {
+    classifier = 'javadoc'
+    from javadoc.destinationDir
+}
+
+artifacts {
+    archives sourcesJar
+    archives javadocJar
 }

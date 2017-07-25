@@ -1,10 +1,14 @@
 package com.github.kotlinutils.core.extensions
 
+
 /**
- * Created by nbv54 on 30-May-17.
+ * Simple name of this object's class (or empty string if there's none)
  */
 inline val <T : Any> T.classSimpleName : String
     get() = this::class.simpleName ?: ""
 
+/**
+ * Simple name of this class (or empty string if there's none)
+ */
 inline val <T: kotlin.reflect.KClass<*>> T.simpleNameOrEmptyStr : String
         get() = this.simpleName ?: ""
