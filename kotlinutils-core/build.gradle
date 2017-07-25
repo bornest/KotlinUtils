@@ -1,0 +1,95 @@
+buildscript {
+    repositories {
+        jcenter()
+        maven { url 'https://dl.bintray.com/kotlin/kotlin-eap' }
+        maven { url 'http://dl.bintray.com/kotlin/kotlin-eap-1.1' }
+    }
+
+    dependencies {
+        classpath "com.android.tools.build:gradle:$android_gradle_plugin_ver"
+
+        // NOTE: Do not place your application dependencies here; they belong
+        // in the individual module build.gradle files
+
+        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_ver"
+        classpath "org.jetbrains.kotlin:kotlin-android-extensions:$kotlin_ver"
+    }
+}
+
+apply plugin: 'com.android.library'
+apply plugin: 'kotlin-android'
+//apply plugin: 'kotlin-android-extensions'
+
+android {
+    compileSdkVersion rootProject.ext.compile_sdk_ver
+    buildToolsVersion "$build_tools_ver"
+
+    defaultConfig {
+        minSdkVersion rootProject.ext.minsdk_ver
+        targetSdkVersion rootProject.ext.targetsdk_ver
+        versionCode 1
+        versionName "1.0"
+
+        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+
+        publishNonDefault true
+        defaultPublishConfig 'release'
+    }
+
+    buildTypes {
+        debug {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+    }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_7
+        targetCompatibility JavaVersion.VERSION_1_7
+    }
+
+    testOptions {
+        unitTests.all {
+            testLogging {
+                outputs.upToDateWhen {false}
+                events "passed", "failed", "standardError"
+                showCauses true
+                showExceptions true
+            }
+        }
+    }
+}
+
+dependencies {
+    compile fileTree(dir: 'libs', include: ['*.jar'])
+
+
+    //region Tests
+        //region Unit tests
+            testCompile 'junit:junit:4.12'
+            testCompile "org.jetbrains.kotlin:kotlin-test:$kotlin_ver"
+
+            testCompile "org.jetbrains.kotlin:kotlin-test-junit:$kotlin_ver"
+
+            //region Mockito
+                // required if you want to use Mockito for unit tests
+                testCompile 'org.mockito:mockito-core:2.8.9'
+
+                testCompile "com.nhaarman:mockito-kotlin:$mockito_kotlin_ver"
+                //For compatibility with kotlin version used in the project
+                testCompile "org.jetbrains.kotlin:kotlin-reflect:$kotlin_ver"
+            //endregion
+        //endregion
+    //endregion
+
+
+    //region Kotlin
+        compile "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_ver"
+        compile "org.jetbrains.kotlin:kotlin-reflect:$kotlin_ver"
+    //endregion
+}
