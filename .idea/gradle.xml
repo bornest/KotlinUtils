@@ -13,6 +13,7 @@
             <option value="$PROJECT_DIR$/core" />
             <option value="$PROJECT_DIR$/id" />
             <option value="$PROJECT_DIR$/random" />
+            <option value="$PROJECT_DIR$/rx2" />
           </set>
         </option>
         <option name="resolveModulePerSourceSet" value="false" />

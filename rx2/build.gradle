@@ -77,6 +77,18 @@ dependencies {
         compile project(path: ':core')
     //endregion
 
+    //region core
+        compile project(path: ':concurrent')
+    //endregion
+
+    //region core
+        compile project(path: ':id')
+    //endregion
+
+    //region core
+        compile project(path: ':random')
+    //endregion
+
     //region Tests
 
         //region Unit tests
@@ -120,15 +132,32 @@ dependencies {
 
 
     //region Kotlin
-        compile "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_ver"
+    compile "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_ver"
     //endregion
 
-    //region RxJava 2.x
-        compile "io.reactivex.rxjava2:rxjava:$rxjava2_ver"
+
+    //region Rx
+        //region RxJava 2.x
+            compile "io.reactivex.rxjava2:rxjava:$rxjava2_ver"
+            compile "io.reactivex.rxjava2:rxandroid:$rxandroid_ver"
+            compile "io.reactivex.rxjava2:rxkotlin:$rxkotlin2_ver"
+
+            compile ("com.jakewharton.rxbinding2:rxbinding:$rxbinding_ver", { exclude group: 'com.android.support' })
+            compile ("com.jakewharton.rxbinding2:rxbinding-kotlin:$rxbinding_ver", { exclude group: 'com.android.support' })
+            compile ("com.jakewharton.rxbinding2:rxbinding-support-v4:$rxbinding_ver", { exclude group: 'com.android.support' })
+            compile ("com.jakewharton.rxbinding2:rxbinding-support-v4-kotlin:$rxbinding_ver", { exclude group: 'com.android.support' })
+            compile ("com.jakewharton.rxbinding2:rxbinding-appcompat-v7:$rxbinding_ver", { exclude group: 'com.android.support' })
+            compile ("com.jakewharton.rxbinding2:rxbinding-appcompat-v7-kotlin:$rxbinding_ver", { exclude group: 'com.android.support' })
+            compile ("com.jakewharton.rxbinding2:rxbinding-design:$rxbinding_ver", { exclude group: 'com.android.support' })
+            compile ("com.jakewharton.rxbinding2:rxbinding-design-kotlin:$rxbinding_ver", { exclude group: 'com.android.support' })
+            compile ("com.jakewharton.rxbinding2:rxbinding-recyclerview-v7:$rxbinding_ver", { exclude group: 'com.android.support' })
+            compile ("com.jakewharton.rxbinding2:rxbinding-recyclerview-v7-kotlin:$rxbinding_ver", { exclude group: 'com.android.support' })
+        //endregion
     //endregion
 
-    //region Concurrent-Locks
-        compile "com.googlecode.concurrent-locks:concurrent-locks:1.0.0"
+
+    //region JDK 7 Concurrency (JSR-166e) Backport
+        compile group: 'com.twitter', name: 'jsr166e', version: '1.1.0'
     //endregion
 
     //region UniTimber

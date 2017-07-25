@@ -1,4 +1,4 @@
-include ':app'
+include ':app', ':rx2'
 
 include ':core'
 include ':id'
