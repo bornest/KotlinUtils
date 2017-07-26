@@ -1,10 +1,10 @@
 KotlinUtils
 ===========
 
-A modular Android library with useful utility classes and extensions written in
+A modular Android library with useful utility classes & extensions written in
 Kotlin.
 
-These are the classes and extensions that I’m continuously creating and using
+These are the utilies that I’m continuously creating and using
 while developing Android apps.
 
 **Most of the functions and methods are `inline` and don’t add to your app’s method
@@ -29,7 +29,7 @@ To use the latest SNAPSHOT add following code to your Gradle dependencies:
 
 `compile 'com.github.bornest.KotlinUtils:{module-name}:-SNAPSHOT'`
 
-where `{module-name}` is name of the desired module
+where `{module-name}` is the name of desired module
 
 Usage
 -----
