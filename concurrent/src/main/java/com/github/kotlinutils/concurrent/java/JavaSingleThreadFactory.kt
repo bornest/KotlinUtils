@@ -9,7 +9,13 @@ import java.util.concurrent.ThreadFactory
  * @param javaThreadPriority Java Thread priority level, from 10 for highest scheduling priority to 1 for lowest scheduling priority
  */
 class JavaSingleThreadFactory(
+    /**
+     * name of the threads created by this thread factory
+     */
     @JvmField val threadName: String,
+    /**
+     * Java Thread priority level, from 10 for highest scheduling priority to 1 for lowest scheduling priority
+     */
     @JvmField val javaThreadPriority: Int
 ) : ThreadFactory {
     

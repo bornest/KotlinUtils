@@ -1,0 +1,118 @@
+buildscript {
+    repositories {
+        jcenter()
+        maven { url 'https://dl.bintray.com/kotlin/kotlin-eap' }
+        maven { url 'http://dl.bintray.com/kotlin/kotlin-eap-1.1' }
+    }
+
+    dependencies {
+        classpath "com.android.tools.build:gradle:$android_gradle_plugin_ver"
+
+        // NOTE: Do not place your application dependencies here; they belong
+        // in the individual module build.gradle files
+
+        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_ver"
+
+        classpath "com.github.dcendents:android-maven-gradle-plugin:$android_maven_plugin_ver"
+        classpath "org.jetbrains.dokka:dokka-gradle-plugin:$dokka_plugin_ver"
+    }
+}
+
+apply plugin: 'com.android.library'
+apply plugin: 'kotlin-android'
+apply plugin: 'com.github.dcendents.android-maven'
+apply plugin: 'org.jetbrains.dokka'
+
+group='com.github.bornest'
+
+android {
+    compileSdkVersion rootProject.ext.compile_sdk_ver
+    buildToolsVersion "$build_tools_ver"
+
+    defaultConfig {
+        minSdkVersion rootProject.ext.minsdk_ver
+        targetSdkVersion rootProject.ext.targetsdk_ver
+
+        versionCode rootProject.ext.lib_ver_code
+        versionName "$lib_ver"
+
+        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+    }
+
+    buildTypes {
+        debug {}
+
+        release {
+            consumerProguardFiles 'proguard-rules.pro'
+        }
+    }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_7
+        targetCompatibility JavaVersion.VERSION_1_7
+    }
+
+    testOptions {
+        unitTests.all {
+            testLogging {
+                outputs.upToDateWhen {false}
+                events "passed", "failed", "standardError"
+                showCauses true
+                showExceptions true
+            }
+        }
+    }
+}
+
+dependencies {
+    compile fileTree(dir: 'libs', include: ['*.jar'])
+
+    //region core
+        compile project(path: ':core')
+    //endregion
+
+    //region concurrent
+        compile project(path: ':concurrent')
+    //endregion
+
+    //region id
+        compile project(path: ':id')
+    //endregion
+
+    //region random
+        compile project(path: ':random')
+    //endregion
+
+    //region rx2
+        compile project(path: ':rx2')
+    //endregion
+}
+
+// build a jar with source files
+task sourcesJar(type: Jar) {
+    from android.sourceSets.main.java.srcDirs
+    classifier = 'sources'
+}
+
+dokka {
+    outputFormat = 'javadoc'
+    outputDirectory = "$buildDir/javadoc"
+}
+
+task javadoc(type: Javadoc) {
+    failOnError  false
+    source = android.sourceSets.main.java.sourceFiles
+    classpath += project.files(android.getBootClasspath().join(File.pathSeparator))
+    classpath += configurations.compile
+}
+
+// build a jar with javadoc
+task javadocJar(type: Jar, dependsOn: javadoc) {
+    classifier = 'javadoc'
+    from javadoc.destinationDir
+}
+
+artifacts {
+    archives sourcesJar
+    archives javadocJar
+}

@@ -4,7 +4,7 @@
 //import android.support.test.runner.AndroidJUnit4
 //import com.github.kotlinutils.random.extensions.randomBoolean
 //import com.github.kotlinutils.random.extensions.sleepRandomTime
-//import com.github.kotlinutils.concurrent.android.extensions.quitSafelyIfPossible
+//import com.github.kotlinutils.concurrent.android.extensions.tryToQuitSafely
 //import com.github.kotlinutils.concurrent.java.extensions.curThreadNameInBr
 //import com.github.kotlinutils.rx2.RxMutExOperationTypesCaller
 //import com.github.kotlinutils.rx2.extensions.scheduler
@@ -46,7 +46,7 @@
 //
 //        assert(latch.await(10, TimeUnit.SECONDS))
 //        aOneD.dispose()
-//        handlerThread.quitSafelyIfPossible()
+//        handlerThread.tryToQuitSafely()
 //    }
 //
 //    //region inner Test Classes

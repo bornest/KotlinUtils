@@ -6,11 +6,17 @@ import java.util.concurrent.ThreadFactory
 /**
  * Simple single thread factory with customizable thread name and Android (Linux) thread priority level
  *
- * @property threadName name of the threads created by this thread factory
- * @property androidThreadPriority a Linux priority level, from -20 for highest scheduling priority to 19 for lowest scheduling priority
+ * @param threadName name of the threads created by this thread factory
+ * @param androidThreadPriority a Linux priority level, from -20 for highest scheduling priority to 19 for lowest scheduling priority
  */
 class AndroidSingleThreadFactory(
+    /**
+     * name of the threads created by this thread factory
+     */
     @JvmField val threadName: String,
+    /**
+     * a Linux priority level, from -20 for highest scheduling priority to 19 for lowest scheduling priority
+     */
     @JvmField val androidThreadPriority: Int
 ) : ThreadFactory {
     

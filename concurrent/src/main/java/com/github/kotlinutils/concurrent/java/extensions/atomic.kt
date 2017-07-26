@@ -3,7 +3,11 @@ package com.github.kotlinutils.concurrent.java.extensions
 import java.util.concurrent.atomic.AtomicReference
 
 /**
- * Created by nbv54 on 30-May-17.
+ * Reference to object stored in this AtomicReference:
+ *
+ * Reading from this property is equivalent to calling [AtomicReference.get]
+ *
+ * Writing to this property is equivalent to calling [AtomicReference.set]
  */
 var <T : Any?> AtomicReference<T>.v: T
     inline get() = this.get()

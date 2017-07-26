@@ -4,7 +4,7 @@ KotlinUtils
 A modular Android library with useful utility classes & extensions written in
 Kotlin.
 
-These are the utilies that I’m continuously creating and using
+These are the utilites that I’m continuously working on and using
 while developing Android apps.
 
 **Most of the functions and methods are `inline` and don’t add to your app’s method

@@ -3,9 +3,14 @@
 package com.github.kotlinutils.concurrent.java.extensions
 
 /**
- * Created by nbv54 on 21-Apr-17.
+ * Name of current thread in square brackets
  */
 inline val <T : Any> T.curThreadNameInBr : String
-            get() = "[${Thread.currentThread().name}]"
-//            get() = Thread.currentThread().let { "[${it.name} ${it.priority}]" }
+    get() = "[${Thread.currentThread().name}]"
+
+/**
+ * Name and priority of current thread in square brackets
+ */
+inline val <T : Any> T.curThreadNameAndPriorityInBr : String
+    get() = Thread.currentThread().let { "[${it.name} ${it.priority}]" }
 
