@@ -35,7 +35,7 @@ Usage
 -----
 
 See each module's README for quick overview of its functionality:
-- concurrent
+- [concurrent](https://github.com/bornest/KotlinUtils/blob/master/concurrent/README.md)
 - core
 - id
 - random
