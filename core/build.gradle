@@ -13,8 +13,8 @@ buildscript {
 
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_ver"
 
-        classpath 'com.github.dcendents:android-maven-gradle-plugin:1.5'
-        classpath "org.jetbrains.dokka:dokka-gradle-plugin:0.9.15"
+        classpath "com.github.dcendents:android-maven-gradle-plugin:$android_maven_plugin_ver"
+        classpath "org.jetbrains.dokka:dokka-gradle-plugin:$dokka_plugin_ver"
     }
 }
 
@@ -32,24 +32,18 @@ android {
     defaultConfig {
         minSdkVersion rootProject.ext.minsdk_ver
         targetSdkVersion rootProject.ext.targetsdk_ver
-        versionCode 1
-        versionName "1.0"
+
+        versionCode rootProject.ext.lib_ver_code
+        versionName "$lib_ver"
 
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
-
-//        publishNonDefault true
-//        defaultPublishConfig 'release'
     }
 
     buildTypes {
-        debug {
-            minifyEnabled false
-            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
-        }
+        debug {}
 
         release {
-            minifyEnabled false
-            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            consumerProguardFiles 'proguard-rules.pro'
         }
     }
 
@@ -83,7 +77,7 @@ dependencies {
 
             //region Mockito
                 // required if you want to use Mockito for unit tests
-                testCompile 'org.mockito:mockito-core:2.8.9'
+                testCompile "org.mockito:mockito-core:$mockito_ver"
 
                 testCompile "com.nhaarman:mockito-kotlin:$mockito_kotlin_ver"
                 //For compatibility with kotlin version used in the project
