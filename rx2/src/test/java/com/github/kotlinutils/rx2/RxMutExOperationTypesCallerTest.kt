@@ -1,7 +1,7 @@
 package com.bornest.apps.onefamily.util.rx2
 
-import com.bornest.apps.onefamily.util.random.extensions.randomBoolean
-import com.bornest.apps.onefamily.util.random.extensions.sleepRandomTime
+import com.github.kotlinutils.random.extensions.randomBoolean
+import com.github.kotlinutils.random.extensions.sleepRandomTime
 import com.github.kotlinutils.concurrent.java.extensions.curThreadNameInBr
 import com.github.kotlinutils.rx2.RxMutExOperationTypesCaller
 import com.github.unitimber.core.JavaLogger

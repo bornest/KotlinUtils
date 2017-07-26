@@ -1,6 +1,6 @@
 @file:Suppress("NOTHING_TO_INLINE")
 
-package com.bornest.apps.onefamily.util.random.extensions
+package com.github.kotlinutils.random.extensions
 
 /**
  * Created by nbv54 on 17-Apr-17.
