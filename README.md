@@ -39,7 +39,7 @@ See each module's README for quick overview of its functionality:
 - core
 - id
 - random
-- rx2
+- [rx2](https://github.com/bornest/KotlinUtils/blob/master/rx2/README.md)
 
 
 Important note

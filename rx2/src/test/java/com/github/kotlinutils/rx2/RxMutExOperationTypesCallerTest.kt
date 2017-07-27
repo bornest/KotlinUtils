@@ -1,9 +1,8 @@
-package com.bornest.apps.onefamily.util.rx2
+package com.github.kotlinutils.rx2
 
 import com.github.kotlinutils.random.extensions.randomBoolean
 import com.github.kotlinutils.random.extensions.sleepRandomTime
 import com.github.kotlinutils.concurrent.java.extensions.curThreadNameInBr
-import com.github.kotlinutils.rx2.RxMutExOperationTypesCaller
 import com.github.unitimber.core.JavaLogger
 import com.github.unitimber.core.UniTimber
 import com.github.unitimber.core.extensions.uniTimberPlantDebugTree
@@ -19,10 +18,6 @@ import java.util.concurrent.CountDownLatch
 import java.util.concurrent.TimeUnit
 import java.util.concurrent.atomic.AtomicBoolean
 import kotlin.test.assertTrue
-
-/**
- * Created by nbv54 on 12-Apr-17.
- */
 
 class RxMutExOperationTypesCallerTest {
 

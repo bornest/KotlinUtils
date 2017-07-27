@@ -29,6 +29,7 @@ import java.util.concurrent.atomic.AtomicBoolean
 import java.util.concurrent.atomic.AtomicLong
 
 typealias OperationKey = String
+
 /**
  * *(internal)* [RxSharedStateAccessingOpCaller] request containing information about the operation and action to be performed with it:
  * - if Boolean is true - register
@@ -37,7 +38,11 @@ typealias OperationKey = String
 typealias KeyOpRegUnregRequest = Pair<RxSharedStateAccessingOpCaller.OperationInfo, Boolean>
 
 /**
- * Created by nbv54 on 10-Apr-17.
+ * Lock-free race-condition-preventing calling queue for operations
+ * that work with different parts of shared state (or with the whole shared state)
+ * on different threads.
+ *
+ * Uses String keys to identify the exact part of shared state that going to be accessed.
  */
 class RxSharedStateAccessingOpCaller(
     override val logTag: String? = null,
@@ -45,9 +50,7 @@ class RxSharedStateAccessingOpCaller(
     val timeUnit: TimeUnit = TimeUnit.MINUTES,
     override var loggingEnabled: Boolean = true
 ) : Loggable {
-    
-    //TODO: add Read/Write locking capabilities
-    
+        
     companion object {
         const val COMMON_OP_KEY: OperationKey = "COMMON_OP_KEY"
     }
@@ -212,6 +215,18 @@ class RxSharedStateAccessingOpCaller(
     
         
     //region Public Methods
+        /**
+         * Add operation [Single] to the calling queue
+         *
+         * Operation will be added to the queue when someone subscribes to returned Single
+         *
+         * @param operation operation [Single] that's added to the queue
+         * @param subscribeOnScheduler [Scheduler] to perform the operation on
+         * @param operationKey key that corresponds to the part of shared state that's going to be accessed
+         * @param operationName name of the operation that's added to the queue (*empty String by default*)
+         *
+         * @return original operation [Single] wrapped into a calling queue [Single]
+         */
         fun <T : Any> callSingle(operation: Single<T>,
                                  subscribeOnScheduler: Scheduler,
                                  operationKey: OperationKey,
@@ -233,6 +248,18 @@ class RxSharedStateAccessingOpCaller(
                 }
         }
         
+        /**
+         * Add operation [Observable] to the calling queue
+         *
+         * Operation will be added to the queue when someone subscribes to returned Observable
+         *
+         * @param operation operation [Observable] that's added to the queue
+         * @param subscribeOnScheduler [Scheduler] to perform the operation on
+         * @param operationKey key that corresponds to the part of shared state that's going to be accessed
+         * @param operationName name of the operation that's added to the queue (*empty String by default*)
+         *
+         * @return original operation [Observable] wrapped into a calling queue [Observable]
+         */
         fun <T : Any> callObservable(operation: Observable<T>,
                                      subscribeOnScheduler: Scheduler,
                                      operationKey: OperationKey,
@@ -262,7 +289,20 @@ class RxSharedStateAccessingOpCaller(
                 }
         }
         
+        /**
+         * Add operation [Flowable] to the calling queue
+         *
+         * Operation will be added to the queue when someone subscribes to returned Flowable
+         *
+         * @param operation operation [Flowable] that's added to the queue
+         * @param subscribeOnScheduler [Scheduler] to perform the operation on
+         * @param operationKey key that corresponds to the part of shared state that's going to be accessed
+         * @param operationName name of the operation that's added to the queue (*empty String by default*)
+         *
+         * @return original operation [Flowable] wrapped into a calling queue [Flowable]
+         */
         fun <T : Any> callFlowable(operation: Flowable<T>,
+                                   subscribeOnScheduler: Scheduler,
                                    operationKey: OperationKey,
                                    operationName: String = ""
         ): Flowable<T> {
@@ -287,6 +327,7 @@ class RxSharedStateAccessingOpCaller(
                                 regUnregReqBus.send(opInfo to false)
                             }
                         }
+                        .subscribeOn(subscribeOnScheduler)
                 }
         }
     //endregion
@@ -388,6 +429,18 @@ class RxSharedStateAccessingOpCaller(
     }
 }
 
+/**
+ * Add this operation [Single] to specified [RxSharedStateAccessingOpCaller] calling queue
+ *
+ * Operation will be added to the queue when someone subscribes to returned Single
+ *
+ * @param opCaller [RxSharedStateAccessingOpCaller] calling queue
+ * @param subscribeOnScheduler [Scheduler] to perform the operation on
+ * @param operationKey key that corresponds to the part of shared state that's going to be accessed
+ * @param operationName name of the operation that's added to the queue (*empty String by default*)
+ *
+ * @return original operation [Single] wrapped into a calling queue [Single]
+ */
 inline fun <T : Any> Single<T>.withOpCaller(opCaller: RxSharedStateAccessingOpCaller,
                                             subscribeOnScheduler: Scheduler,
                                             operationKey: OperationKey,
@@ -396,19 +449,44 @@ inline fun <T : Any> Single<T>.withOpCaller(opCaller: RxSharedStateAccessingOpCa
     return opCaller.callSingle(this, subscribeOnScheduler, operationKey, operationName)
 }
 
+/**
+ * Add this operation [Observable] to specified [RxSharedStateAccessingOpCaller] calling queue
+ *
+ * Operation will be added to the queue when someone subscribes to returned Observable
+ *
+ * @param opCaller [RxSharedStateAccessingOpCaller] calling queue
+ * @param subscribeOnScheduler [Scheduler] to perform the operation on
+ * @param operationKey key that corresponds to the part of shared state that's going to be accessed
+ * @param operationName name of the operation that's added to the queue (*empty String by default*)
+ *
+ * @return original operation [Observable] wrapped into a calling queue [Observable]
+ */
 inline fun <T : Any> Observable<T>.withOpCaller(opCaller: RxSharedStateAccessingOpCaller,
-                                                             subscribeOnScheduler: Scheduler,
-                                                             operationKey: OperationKey,
-                                                             operationName: String = ""
+                                                subscribeOnScheduler: Scheduler,
+                                                operationKey: OperationKey,
+                                                operationName: String = ""
 ): Observable<T> {
     return opCaller.callObservable(this, subscribeOnScheduler, operationKey, operationName)
 }
 
+/**
+ * Add this operation [Flowable] to specified [RxSharedStateAccessingOpCaller] calling queue
+ *
+ * Operation will be added to the queue when someone subscribes to returned Flowable
+ *
+ * @param opCaller [RxSharedStateAccessingOpCaller] calling queue
+ * @param subscribeOnScheduler [Scheduler] to perform the operation on
+ * @param operationKey key that corresponds to the part of shared state that's going to be accessed
+ * @param operationName name of the operation that's added to the queue (*empty String by default*)
+ *
+ * @return original operation [Flowable] wrapped into a calling queue [Flowable]
+ */
 inline fun <T : Any> Flowable<T>.withOpCaller(opCaller: RxSharedStateAccessingOpCaller,
+                                              subscribeOnScheduler: Scheduler,
                                               operationKey: OperationKey,
                                               operationName: String = ""
 ): Flowable<T> {
-    return opCaller.callFlowable(this, operationKey, operationName)
+    return opCaller.callFlowable(this, subscribeOnScheduler, operationKey, operationName)
 }
 
 

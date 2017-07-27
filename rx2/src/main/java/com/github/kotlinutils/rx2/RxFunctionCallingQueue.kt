@@ -12,12 +12,9 @@ import io.reactivex.Scheduler
 import io.reactivex.disposables.Disposable
 import io.reactivex.schedulers.Schedulers
 
-/**
- * Created by nbv54 on 24-Mar-17.
- */
 @Suppress("NOTHING_TO_INLINE")
 /**
- * Created by nbv54 on 09-Feb-17.
+ * Queue of function objects that are called in a serialized manner on specified [Scheduler]
  */
 class RxFunctionCallingQueue(
     override val logTag: String,
@@ -25,7 +22,12 @@ class RxFunctionCallingQueue(
 ) : Loggable {
     val asyncCallsBus = rxTypedPublishBus<() -> Unit>()
     var asyncCallsDisposable: Disposable? = null
-
+    
+    /**
+     * Start processing the queue
+     *
+     * @param scheduler [Scheduler] to call functions on (**Schedulers.io() by default**)
+     */
     inline fun setupSubscription(scheduler: Scheduler = Schedulers.io()) {
         if (asyncCallsDisposable.isDisposedOrNull) {
             asyncCallsDisposable = asyncCallsBus.toObservable()
@@ -35,7 +37,13 @@ class RxFunctionCallingQueue(
                 }
         }
     }
-
+    
+    /**
+     * Start processing the queue
+     *
+     * @param scheduler [Scheduler] to call functions on (**Schedulers.io() by default**)
+     * @param doOnEachCall additional action to perform before each call
+     */
     inline fun setupSubscription(scheduler: Scheduler = Schedulers.io(), crossinline doOnEachCall: () -> Unit) {
         if (asyncCallsDisposable.isDisposedOrNull) {
             asyncCallsDisposable = asyncCallsBus.toObservable()
@@ -46,14 +54,25 @@ class RxFunctionCallingQueue(
                 }
         }
     }
-
+    
+    /**
+     * Stop processing the queue
+     */
     fun clearSubscription() {
         if (!asyncCallsDisposable.isDisposedOrNull) {
             asyncCallsDisposable?.dispose()
             asyncCallsDisposable = null
         }
     }
-
+    
+    /**
+     * Add function to queue
+     *
+     * Adds the function to the queue. Logs provided message on enqueue and on execution of the function.
+     *
+     * @param message comment about the function that's being enqueued (usually its name)
+     * @param action function to enqueue
+     */
     inline fun enq(message: String? = null, crossinline action: () -> Unit) {
         message?.let { d { " $curThreadNameInBr callingQueue Enqueue: $it" } }
         val lambda = {
@@ -62,7 +81,17 @@ class RxFunctionCallingQueue(
         }
         asyncCallsBus.send(lambda)
     }
-
+    
+    /**
+     * Add function to queue
+     *
+     * Adds the function to the queue. Logs provided message on enqueue and on execution of the function.
+     *
+     * @param customTag custom log tag to use while logging on enqueue and on execution of the function
+     * @param message comment about the function that's being enqueued (usually its name)
+     * @param customLoggingCondition custom logging condition (*is equal to the value of loggingEnabled by default*)
+     * @param action function to enqueue
+     */
     inline fun enq(customTag: String, message: String, customLoggingCondition: Boolean = loggingEnabled, crossinline action: () -> Unit) {
         d(customLoggingCondition, customTag) { " $curThreadNameInBr callingQueue Enqueue: $message" }
         val lambda = {
@@ -70,16 +99,5 @@ class RxFunctionCallingQueue(
             action()
         }
         asyncCallsBus.send(lambda)
-    }
-
-    inline fun callAsyncIfTrueElseCallBlocking(condition: Boolean = true, crossinline action: () -> Unit) {
-        if (condition) {
-            val lambda = {
-                action()
-            }
-            asyncCallsBus.send(lambda)
-        } else {
-            action()
-        }
     }
 }

@@ -45,7 +45,10 @@ typealias OpTypeState = Pair<RxMutExOperationTypesCaller.OperationType, Int>
 typealias TypedOpRegUnregRequest = Pair<RxMutExOperationTypesCaller.OperationInfo, Boolean>
 
 /**
- * Created by nbv54 on 10-Apr-17.
+ * Lock-free race-condition-preventing calling queue
+ * for operations of mutually exclusive types
+ * that work with shared state
+ * on different threads.
  */
 class RxMutExOperationTypesCaller(
     override val logTag: String? = null,
@@ -204,6 +207,17 @@ class RxMutExOperationTypesCaller(
     
     
     //region Public Methods
+        /**
+         * Add operation [Single] to the calling queue
+         *
+         * Operation will be added to the queue when someone subscribes to returned Single
+         *
+         * @param operationType type of the operation that's added to the queue
+         * @param operationName name of the operation that's added to the queue (*empty String by default*)
+         * @param operation operation [Single] that's added to the queue
+         *
+         * @return original operation [Single] wrapped into a calling queue [Single]
+         */
         fun <T : Any> callSingle(operationType: OperationType,
                                  operationName: String = "",
                                  operation: Single<T>
@@ -223,6 +237,17 @@ class RxMutExOperationTypesCaller(
                 }
         }
     
+        /**
+         * Add operation [Observable] to the calling queue
+         *
+         * Operation will be added to the queue when someone subscribes to returned Observable
+         *
+         * @param operationType type of the operation that's added to the queue
+         * @param operationName name of the operation that's added to the queue (*empty String by default*)
+         * @param operation operation [Observable] that's added to the queue
+         *
+         * @return original operation [Observable] wrapped into a calling queue [Observable]
+         */
         fun <T : Any> callObservable(operationType: OperationType,
                                      operationName: String = "",
                                      operation: Observable<T>
@@ -250,6 +275,17 @@ class RxMutExOperationTypesCaller(
                 }
         }
     
+        /**
+         * Add operation [Flowable] to the calling queue
+         *
+         * Operation will be added to the queue when someone subscribes to returned Flowable
+         *
+         * @param operationType type of the operation that's added to the queue
+         * @param operationName name of the operation that's added to the queue (*empty String by default*)
+         * @param operation operation [Flowable] that's added to the queue
+         *
+         * @return original operation [Flowable] wrapped into a calling queue [Flowable]
+         */
         fun <T : Any> callFlowable(operationType: OperationType,
                                      operationName: String = "",
                                      operation: Flowable<T>

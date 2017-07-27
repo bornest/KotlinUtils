@@ -43,7 +43,6 @@ import org.reactivestreams.Publisher
 
 
 //region logging Emitter
-    
     inline fun FlowableEmitter<*>.loggingOnError(loggingEnabled: Boolean = true,
                                                  errorMessage: () -> String
     ) {
