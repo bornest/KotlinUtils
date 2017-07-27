@@ -1,5 +1,6 @@
 KotlinUtils
 ===========
+[![](https://jitpack.io/v/bornest/KotlinUtils.svg)](https://jitpack.io/#bornest/KotlinUtils)
 
 A modular Android library with useful utility classes & extensions written in
 Kotlin.
@@ -24,6 +25,9 @@ Modules
 
 Setup
 --------
+To use the latest release add following code to your Gradle dependencies:
+
+`compile 'com.github.bornest.KotlinUtils:{module-name}:v0.1.0'`
 
 To use the latest SNAPSHOT add following code to your Gradle dependencies:
 
